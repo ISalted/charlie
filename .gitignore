@@ -1,0 +1,16 @@
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+results.json
+trace.zip
+
+# secrets / local config (never commit)
+.env
+.env.local
+.mcp.json
+
+# OS / editor noise
+.DS_Store
+*.log

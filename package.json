@@ -1,0 +1,21 @@
+{
+  "name": "charlie-aqa",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AQA suite for the Charlie registration quiz (Allright paid-traffic sign-up funnel).",
+  "scripts": {
+    "test": "playwright test",
+    "ui": "playwright test --ui",
+    "headed": "playwright test --headed",
+    "grep": "playwright test --grep",
+    "report": "playwright show-report",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^9.3.0",
+    "@playwright/test": "^1.49.0",
+    "@types/node": "^22.10.0",
+    "dotenv": "^16.4.7",
+    "typescript": "^5.7.2"
+  }
+}
