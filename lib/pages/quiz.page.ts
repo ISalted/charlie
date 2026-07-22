@@ -182,6 +182,7 @@ export class QuizPage extends BasePage {
     for (let i = 0; i < QuizPage.MAX_STEPS; i++) {
       await this.handleDialogIfPresent();
       if (await this.isComplete()) return { reachedEnd: true, stepsTaken, path };
+      await this.settleStep(); // let the liquid-fire transition finish before reading/acting
 
       const before = await this.currentStepId();
       path.push(await this.detectStep());
@@ -198,6 +199,25 @@ export class QuizPage extends BasePage {
 
   private async currentStepId(): Promise<string | null> {
     return this.stepContainer.getAttribute("data-step-name").catch(() => null);
+  }
+
+  /**
+   * Wait for a liquid-fire transition to finish — exactly ONE `[data-step-name]` in the DOM — so we
+   * never read/act on the outgoing step that is still animating out. Returns early if an overlay is up
+   * (it unmounts the step; handleDialogIfPresent clears it) or we've completed. Uses waitForFunction,
+   * NOT page.evaluate, so it never throws "Target closed" during a transition.
+   */
+  private async settleStep(): Promise<void> {
+    await this.page
+      .waitForFunction(
+        () =>
+          location.pathname.includes("/app/dashboard") ||
+          !!document.querySelector("dialog.popup-leaving-page[open]") ||
+          document.querySelectorAll("[data-step-name]").length === 1,
+        undefined,
+        { timeout: 10000 },
+      )
+      .catch(() => {});
   }
 
   /** Fill the visible input with the persona value matching its shape (phone / email / name). */
