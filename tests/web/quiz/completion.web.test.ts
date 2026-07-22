@@ -23,9 +23,9 @@ test.describe("Charlie quiz — completion @web @quiz @completion @mutating", ()
     webClient,
     helpers,
   }) => {
-    // Completing ~21 steps of a live funnel (real waits, transitions, interstitials) far exceeds
-    // Playwright's 30s default — give it a realistic budget.
-    test.setTimeout(60_000);
+    // Completing ~21 steps of a live funnel (real waits, transitions, interstitials) takes ~1min
+    // even on a healthy run — 60s sits right on the edge. Give it a realistic budget.
+    test.setTimeout(120_000);
     const lead = quizLead("completion");
 
     // Act: drive the variable middle to the end while watching the account-create request.

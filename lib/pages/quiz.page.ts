@@ -267,7 +267,12 @@ export class QuizPage extends BasePage {
   // ── private helpers (no @step; not part of the test-facing contract) ──
 
   private async currentStepId(): Promise<string | null> {
-    return this.stepContainer.getAttribute("data-step-name").catch(() => null);
+    // Short timeout: on the terminal page (request-gotten) there is NO `[data-step-name]`, and an
+    // unbounded getAttribute would auto-wait for it until the whole test times out (~26s observed).
+    // Absent → null fast; the caller (isComplete / advanceFrom) decides what that means.
+    return this.stepContainer
+      .getAttribute("data-step-name", { timeout: 3000 })
+      .catch(() => null);
   }
 
   /**
@@ -356,7 +361,7 @@ export class QuizPage extends BasePage {
             return false;
           },
           beforeStepId,
-          { timeout: 15000 },
+          { timeout: 8000 },
         )
         .catch(() => {}); // never throw from the engine; reachedEnd is judged by isComplete()
     }
