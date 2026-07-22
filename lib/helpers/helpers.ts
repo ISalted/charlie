@@ -21,33 +21,29 @@ export class Helpers {
   }
 
   /**
-   * Run a quiz-completion action while watching for the two outcome POSTs, and RETURN what
-   * happened for the test to assert:
+   * Run a quiz-completion action while watching for the account-create POST, and RETURN what happened
+   * for the test to assert:
    *   • account created → `POST /api/v1/users` 2xx
-   *   • trial booked    → `POST /api/v1/lessons` 2xx
-   * The watchers are armed BEFORE the action so the requests can't be missed.
+   * This is the one backend mutation the funnel always makes and we can see without API creds. The
+   * "trial booked" half is a trial REQUEST in the live variant (no `POST /api/v1/lessons` fires) — its
+   * proof is reaching the `/app/request-gotten` confirmation, carried in `runResult.reachedEnd`.
+   * The watcher is armed BEFORE the action so the request can't be missed.
    */
   @step()
   async captureQuizOutcome(run: () => Promise<QuizRunResult>, timeoutMs = 180_000): Promise<QuizOutcome> {
-    const isPost = (method: string) => method === "POST";
     const userReq = this.page
-      .waitForResponse((r) => /\/api\/v1\/users(\?|$)/.test(r.url()) && isPost(r.request().method()), {
-        timeout: timeoutMs,
-      })
-      .catch(() => null);
-    const lessonReq = this.page
-      .waitForResponse((r) => /\/api\/v1\/lessons(\?|$)/.test(r.url()) && isPost(r.request().method()), {
-        timeout: timeoutMs,
-      })
+      .waitForResponse(
+        (r) => /\/api\/v1\/users(\?|$)/.test(r.url()) && r.request().method() === "POST",
+        { timeout: timeoutMs },
+      )
       .catch(() => null);
 
     const runResult = await run();
-    const [userRes, lessonRes] = await Promise.all([userReq, lessonReq]);
+    const userRes = await userReq;
 
     return {
       runResult,
       accountCreated: !!userRes && userRes.ok(),
-      trialBooked: !!lessonRes && lessonRes.ok(),
     };
   }
 }

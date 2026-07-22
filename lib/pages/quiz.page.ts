@@ -32,10 +32,14 @@ export class QuizPage extends BasePage {
 
   /** The active step wrapper — scope root for every content-agnostic child. `.last()` prefers the
    *  incoming step during liquid-fire transitions (two may briefly coexist). */
-  private readonly stepContainer: Locator = this.page.locator("[data-step-name]").last();
+  private readonly stepContainer: Locator = this.page
+    .locator("[data-step-name]")
+    .last();
 
   /** Step counter "N / M" — drives the "progress moves forward" invariant. */
-  private readonly stepCounter: Locator = this.page.locator('[class*="step-counter"]');
+  private readonly stepCounter: Locator = this.page.locator(
+    '[class*="step-counter"]',
+  );
 
   /** Header back control (icon-only). Keyed on the arrow svg symbol (namespaced xlink:href). */
   private readonly backButton: Locator = this.page.locator(
@@ -45,7 +49,8 @@ export class QuizPage extends BasePage {
   // ── Generic step anatomy (content-agnostic, scoped to the active step) ──
 
   /** The single primary advance CTA (info / multi-choice / input steps). Absent on single-choice. */
-  private readonly primaryCta: Locator = this.stepContainer.locator("button.btn.orange");
+  private readonly primaryCta: Locator =
+    this.stepContainer.locator("button.btn.orange");
 
   /** Answer options: step buttons that are NOT the CTA and carry a visible label (excludes the
    *  icon-only "mute video" control that some steps render). Verified 10 (age-range) / 8 (child-hobby). */
@@ -60,35 +65,51 @@ export class QuizPage extends BasePage {
   );
 
   /** One answer option by index — shape-based factory (parameterization, not `.first()`-papering). */
-  private readonly optionAt = (index: number): Locator => this.optionButtons.nth(index);
+  private readonly optionAt = (index: number): Locator =>
+    this.optionButtons.nth(index);
 
   // ── Overlay dialogs (interstitial modals that interrupt the flow) ──
 
   /** The random "leaving-page" exit-intent popup: a native `<dialog class="popup-leaving-page">` in the
    *  TOP LAYER that fires at ANY step and unmounts the step behind it. Verified live: clicking its CTA
    *  span (`.popup-leaving-page__btn`) closes it and remounts the step — it does NOT actually book. */
-  private readonly leavingPopup: Locator = this.page.locator("dialog.popup-leaving-page[open]");
-  private readonly leavingPopupDismiss: Locator = this.leavingPopup.locator(".popup-leaving-page__btn");
+  private readonly leavingPopup: Locator = this.page.locator(
+    "dialog.popup-leaving-page[open]",
+  );
+  private readonly leavingPopupDismiss: Locator = this.leavingPopup.locator(
+    ".popup-leaving-page__btn",
+  );
 
   /** A blocking modal other than the leaving-page popup — e.g. the required "who's filling this?"
-   *  picker, which is a native `<dialog>` (no role attribute), so match `dialog[open]` too. Exclude
-   *  the leaving-page popup here — it's handled by its own branch first. */
+   *  picker, which is a native `<dialog>` (no role attribute), so match `dialog[open]` too. Filtered to
+   *  VISIBLE so `.isVisible()` never trips strict-mode on hidden duplicate modals. Leaving-page popup is
+   *  excluded (handled by its own branch first). */
   private readonly dialog: Locator = this.page.locator(
     'dialog[open]:not(.popup-leaving-page), [role="dialog"]',
   );
 
-  /** The dialog's ✕ close control (accessible name "Close"). */
-  private readonly dialogClose: Locator = this.dialog.getByRole("button", { name: "Close" });
+  /** The visible dialog's ✕ close control (accessible name "Close"). */
+  private readonly dialogClose: Locator = this.dialog
+    .first()
+    .getByRole("button", { name: "Close" });
 
-  /** The dialog's answer buttons (labelled) — present on a REQUIRED picker. Content-agnostic. */
+  /** The visible dialog's answer buttons (labelled) — present on a REQUIRED picker. Content-agnostic. */
   private readonly dialogChoiceButtons: Locator = this.dialog
+    .first()
     .locator("button")
     .filter({ hasText: /\S/ });
 
   // ── Success / outcome surface ──
-  // The quiz has no confirmation-screen test-id; completion REDIRECTS to the authenticated
-  // dashboard. `isComplete()` keys on that URL. The variant-independent proof (account created +
-  // trial booked) is the OUTCOME ORACLE — verified via the network/API, not this surface.
+  // The quiz has NO confirmation-screen test-id. Completing the funnel REDIRECTS to the trial-request
+  // confirmation page `/uk/app/request-gotten` ("Дякуємо! Ваш запит отримано") — verified live from a
+  // real completion trace. (`/app/dashboard` is kept as a known alternate success surface in case a
+  // variant logs the user straight in.) `isComplete()` keys on this URL — the stable, copy-independent
+  // signal. The account-created proof is the OUTCOME ORACLE (POST /api/v1/users), read from the
+  // network, not this surface.
+
+  /** URL of a terminal success surface — the trial-request confirmation, or the dashboard (alternate
+   *  variant). Copy-independent; this is what `isComplete()` keys on. */
+  private static readonly SUCCESS_URL = /\/app\/(request-gotten|dashboard)/;
 
   // ════════════════════════════════════════════════════════════════════════
   // ── METHODS — the generic step engine (act-and-return; the object never asserts) ──
@@ -98,12 +119,22 @@ export class QuizPage extends BasePage {
   @step()
   async detectStep(): Promise<StepKind> {
     await this.stepContainer.waitFor({ state: "visible" }).catch(() => {});
-    if (await this.textInput.first().isVisible().catch(() => false)) {
-      const type = await this.textInput.first().getAttribute("type").catch(() => null);
+    if (
+      await this.textInput
+        .first()
+        .isVisible()
+        .catch(() => false)
+    ) {
+      const type = await this.textInput
+        .first()
+        .getAttribute("type")
+        .catch(() => null);
       return type === "date" ? "date" : "text";
     }
     if ((await this.optionButtons.count().catch(() => 0)) > 0) {
-      return (await this.primaryCta.isVisible().catch(() => false)) ? "multi-choice" : "single-choice";
+      return (await this.primaryCta.isVisible().catch(() => false))
+        ? "multi-choice"
+        : "single-choice";
     }
     if (await this.primaryCta.isVisible().catch(() => false)) return "info";
     return "unknown";
@@ -145,26 +176,52 @@ export class QuizPage extends BasePage {
   @step()
   async handleDialogIfPresent(): Promise<void> {
     if ((await this.leavingPopup.count().catch(() => 0)) > 0) {
-      await this.leavingPopupDismiss.click({ force: true, timeout: 5000 }).catch(() => {});
+      await this.leavingPopupDismiss
+        .click({ force: true, timeout: 5000 })
+        .catch(() => {});
       if ((await this.leavingPopup.count().catch(() => 0)) > 0) {
         await this.page.keyboard.press("Escape").catch(() => {});
       }
-      await this.leavingPopup.waitFor({ state: "detached", timeout: 5000 }).catch(() => {});
+      await this.leavingPopup
+        .waitFor({ state: "detached", timeout: 5000 })
+        .catch(() => {});
       return;
     }
-    if (!(await this.dialog.isVisible().catch(() => false))) return;
-    if ((await this.dialogChoiceButtons.count().catch(() => 0)) > 0) {
-      await this.dialogChoiceButtons.first().click().catch(() => {});
+    if ((await this.dialog.count().catch(() => 0)) === 0) return;
+    // "Who's filling this?" picker: choose the PARENT option — the child option routes into a
+    // different flow that dead-ends the booking. Fall back to the first labelled option / Close.
+    const parent = this.dialog
+      .first()
+      .getByRole("button", { name: /батьк|мати|parent/i });
+    if ((await parent.count().catch(() => 0)) > 0) {
+      await parent
+        .first()
+        .click({ force: true })
+        .catch(() => {});
+    } else if ((await this.dialogChoiceButtons.count().catch(() => 0)) > 0) {
+      await this.dialogChoiceButtons
+        .first()
+        .click({ force: true })
+        .catch(() => {});
     } else {
-      await this.dialogClose.click().catch(() => {});
+      await this.dialogClose.click({ force: true }).catch(() => {});
     }
-    await this.dialog.waitFor({ state: "hidden", timeout: 5000 }).catch(() => {});
+    await this.dialog
+      .first()
+      .waitFor({ state: "hidden", timeout: 5000 })
+      .catch(() => {});
   }
 
-  /** Reached the terminal success surface (authenticated dashboard after booking). */
+  /** Reached the terminal success surface (trial-request confirmation, or dashboard alternate). */
   @step()
   async isComplete(): Promise<boolean> {
-    return this.page.url().includes("/app/dashboard");
+    return QuizPage.SUCCESS_URL.test(this.page.url());
+  }
+
+  /** The active step's stable id (`data-step-name`), or null. Content-agnostic progress signal. */
+  @step()
+  async currentStepName(): Promise<string | null> {
+    return this.currentStepId();
   }
 
   /** Read the current progress counter text ("N / M"), or null if absent. */
@@ -182,10 +239,14 @@ export class QuizPage extends BasePage {
   async runToCompletion(persona: QuizLead): Promise<QuizRunResult> {
     const path: StepKind[] = [];
     let stepsTaken = 0;
+    let reached = false;
 
     for (let i = 0; i < QuizPage.MAX_STEPS; i++) {
       await this.handleDialogIfPresent();
-      if (await this.isComplete()) return { reachedEnd: true, stepsTaken, path };
+      if (await this.isComplete()) {
+        reached = true;
+        break;
+      }
       await this.settleStep(); // let the liquid-fire transition finish before reading/acting
 
       const before = await this.currentStepId();
@@ -196,7 +257,11 @@ export class QuizPage extends BasePage {
       await this.advanceFrom(before); // clicks the CTA if present; single-choice already advanced
     }
 
-    return { reachedEnd: await this.isComplete(), stepsTaken, path };
+    return {
+      reachedEnd: reached || (await this.isComplete()),
+      stepsTaken,
+      path,
+    };
   }
 
   // ── private helpers (no @step; not part of the test-facing contract) ──
@@ -215,7 +280,7 @@ export class QuizPage extends BasePage {
     await this.page
       .waitForFunction(
         () =>
-          location.pathname.includes("/app/dashboard") ||
+          /\/app\/(request-gotten|dashboard)/.test(location.pathname) ||
           !!document.querySelector("dialog.popup-leaving-page[open]") ||
           document.querySelectorAll("[data-step-name]").length === 1,
         undefined,
@@ -236,6 +301,9 @@ export class QuizPage extends BasePage {
     if (type === "tel" || inputmode === "tel") value = persona.phone;
     else if (type === "email" || name === "email") value = persona.email;
     await input.click();
+    // Clear any pre-filled value first (the phone field is pre-seeded with the "0" country code —
+    // typing the full E.164 on top of it would produce "00…" and never validate).
+    await input.fill("").catch(() => {});
     // pressSequentially (not fill): masked/intl inputs only enable their CTA on real key events.
     await input.pressSequentially(value);
   }
@@ -249,15 +317,21 @@ export class QuizPage extends BasePage {
    */
   private async advanceFrom(beforeStepId: string | null): Promise<void> {
     for (let attempt = 0; attempt < 4; attempt += 1) {
-      // Clear a popup that intercepted a previous attempt, then re-read where we actually are.
-      if ((await this.leavingPopup.count().catch(() => 0)) > 0) {
+      // Clear ANY overlay that intercepted a previous attempt — the exit-intent leaving popup OR a
+      // REQUIRED picker (e.g. the "who's filling this?" native <dialog> that lands ON TOP of the CTA
+      // right after clicking it). Without this the loop re-clicks the now-covered CTA and Playwright
+      // hangs on actionability until the test times out ("залипає"). Some pickers ARE the advance
+      // affordance, so clearing one can itself move the step forward — hence `continue`, to re-read
+      // the step id at the loop top before touching the CTA again.
+      if (
+        (await this.leavingPopup.count().catch(() => 0)) > 0 ||
+        (await this.dialog.count().catch(() => 0)) > 0
+      ) {
         await this.handleDialogIfPresent();
         await this.settleStep();
+        continue;
       }
-      if (this.page.url().includes("/app/dashboard")) return;
-      // A REQUIRED dialog appeared (e.g. the "who's filling this?" picker) — hand back so the loop's
-      // handleDialogIfPresent answers it; hammering the CTA behind the overlay would just waste time.
-      if (await this.dialog.first().isVisible().catch(() => false)) return;
+      if (QuizPage.SUCCESS_URL.test(this.page.url())) return;
       const current = await this.currentStepId();
       if (current !== null && current !== beforeStepId) return; // already advanced
 
@@ -270,9 +344,11 @@ export class QuizPage extends BasePage {
       await this.page
         .waitForFunction(
           (prev: string | null) => {
-            if (location.pathname.includes("/app/dashboard")) return true;
+            if (/\/app\/(request-gotten|dashboard)/.test(location.pathname))
+              return true;
             // an overlay intercepted the advance → stop waiting; the loop clears it and we retry.
-            if (document.querySelector("dialog[open], [role=dialog]")) return true;
+            if (document.querySelector("dialog[open], [role=dialog]"))
+              return true;
             const steps = document.querySelectorAll("[data-step-name]");
             for (let i = 0; i < steps.length; i += 1) {
               if (steps[i].getAttribute("data-step-name") !== prev) return true;

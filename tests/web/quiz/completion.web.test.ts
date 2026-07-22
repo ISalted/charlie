@@ -6,10 +6,12 @@ import { quizLead } from "@data/quiz/quiz-lead.data";
  * Part B — Variant 1: a resilient business-outcome check.
  *
  * Drives WHATEVER A/B variant is served to completion (generic, shape-based engine — no per-step
- * script) and asserts the variant-independent business result: account created + trial booked,
- * confirmed from the real network requests.
+ * script) and asserts the variant-independent business result in two halves:
+ *   1. TRIAL REQUEST submitted — reached the `/app/request-gotten` confirmation surface (in the live
+ *      variant the trial is a request an admin schedules later; there is NO booking POST to watch).
+ *   2. ACCOUNT CREATED — `POST /api/v1/users` returned 2xx (read from the network, no API creds).
  *
- * @mutating — a green run creates real entities on stage (a user + a trial booking). This is a
+ * @mutating — a green run creates real entities on stage (a user + a trial request). This is a
  * CI / scheduled-monitor test with synthetic tagged leads, NOT a casual local run.
  */
 test.describe("Charlie quiz — completion @web @quiz @completion @mutating", () => {
@@ -17,27 +19,29 @@ test.describe("Charlie quiz — completion @web @quiz @completion @mutating", ()
     await webClient.goTo(AppRoute.quizEntry);
   });
 
-  test.only("QZ-002: completing the quiz creates the account and books a trial @web @quiz @completion @mutating", async ({
+  test.only("QZ-002: completing the quiz creates the account and submits a trial request @web @quiz @completion @mutating", async ({
     webClient,
     helpers,
   }) => {
-    // Completing ~20 steps with real waits far exceeds Playwright's 30s default.
-    test.setTimeout(30_000);
+    // Completing ~21 steps of a live funnel (real waits, transitions, interstitials) far exceeds
+    // Playwright's 30s default — give it a realistic budget.
+    test.setTimeout(60_000);
     const lead = quizLead("completion");
 
-    // Act: drive the variable middle to the end while watching the two outcome requests.
+    // Act: drive the variable middle to the end while watching the account-create request.
     const outcome = await helpers.captureQuizOutcome(() =>
       webClient.quizPage.runToCompletion(lead),
     );
 
-    // Invariant: the flow terminated at the success surface (the path is attached for triage).
+    // Outcome, half 1 — TRIAL REQUEST submitted: the flow terminated on the confirmation surface
+    // (`/app/request-gotten`). In this variant the trial is a request an admin schedules later, so the
+    // confirmation surface — not a booking POST — is its variant-independent proof. Path attached for triage.
     expect(
       outcome.runResult.reachedEnd,
-      `reached the end? path: ${outcome.runResult.path.join(" → ")}`,
+      `reached the confirmation surface? path: ${outcome.runResult.path.join(" → ")}`,
     ).toBeTruthy();
 
-    // Outcome oracle (variant-independent) — the money result actually happened.
+    // Outcome, half 2 — ACCOUNT CREATED: the money mutation actually hit the backend.
     expect(outcome.accountCreated, "account created (POST /api/v1/users 2xx)").toBeTruthy();
-    expect(outcome.trialBooked, "trial booked (POST /api/v1/lessons 2xx)").toBeTruthy();
   });
 });

@@ -1,0 +1,275 @@
+- generic [active] [ref=f56e1]:
+    - generic [ref=f56e3]:
+        - banner [ref=f56e5]:
+            - generic [ref=f56e6]:
+                - link [ref=f56e7] [cursor=pointer]:
+                    - /url: https://stage.allright.com/uk
+                    - img "Allright Logo" [ref=f56e8]
+                - generic [ref=f56e11]:
+                    - link [ref=f56e12] [cursor=pointer]:
+                        - /url: /uk/app/account/849755/student-dashboard
+                        - button "Дитячий простір" [ref=f56e13]
+                    - link "База знань" [ref=f56e86] [cursor=pointer]:
+                        - /url: https://help.allright.com/uk
+                        - button [ref=f56e87]
+                    - link [ref=f56e90] [cursor=pointer]:
+                        - /url: /uk/app/chat
+                        - button "Чат" [ref=f56e91]
+                    - button [ref=f56e97] [cursor=pointer]:
+                        - button [ref=f56e98]
+        - generic [ref=f56e103]:
+            - generic [ref=f56e106]:
+                - generic [ref=f56e107]:
+                    - generic [ref=f56e108]:
+                        - paragraph [ref=f56e109]: Перезапишіться на пробний урок безкоштовно
+                        - paragraph
+                    - img "time-select-emodji" [ref=f56e110]
+                - generic [ref=f56e113]:
+                    - generic [ref=f56e114]: День і час уроку
+                    - generic [ref=f56e115]:
+                        - generic [ref=f56e117]:
+                            - list [ref=f56e118]:
+                                - listitem [ref=f56e119] [cursor=pointer]:
+                                    - paragraph [ref=f56e120]: вівторок
+                                    - paragraph [ref=f56e121]: 28 липня
+                            - combobox [ref=f56e124]:
+                                - generic [ref=f56e125]: 17:00
+                            - generic [ref=f56e132]:
+                                - button "Kyiv UTC +3" [ref=f56e133] [cursor=pointer]
+                                - button [ref=f56e134] [cursor=pointer]
+                            - generic [ref=f56e137]:
+                                - heading "Тип вчителя" [level=3] [ref=f56e138]
+                                - generic [ref=f56e139]:
+                                    - button "Знає мову дитини" [ref=f56e140] [cursor=pointer]
+                                    - button "Виключно англомовний" [ref=f56e142] [cursor=pointer]
+                        - button "Забронювати урок" [ref=f56e144] [cursor=pointer]
+            - generic [ref=f56e145]:
+                - paragraph [ref=f56e146]: Навчаючись в All Right, ви отримаєте
+                - generic [ref=f56e147]:
+                    - generic [ref=f56e148]:
+                        - paragraph [ref=f56e149]: 600+ досвідчених вчителів
+                        - paragraph [ref=f56e150]: Ви точно знайдете ідеального для своєї дитини серед них
+                        - img "teachers" [ref=f56e152]
+                    - generic [ref=f56e153]:
+                        - paragraph [ref=f56e154]: Розмовні клуби
+                        - paragraph [ref=f56e155]: Групові заняття з ровесниками сприяють розвитку розмовних навичок.
+                        - img "speaking-club" [ref=f56e158]
+                    - generic [ref=f56e159]:
+                        - paragraph [ref=f56e160]: Інтерактивні вправи
+                        - paragraph [ref=f56e161]: Інтерактивні вправи допомагають закріпити вивчений матеріал.
+                        - img "exercises" [ref=f56e163]
+                    - generic [ref=f56e164]:
+                        - paragraph [ref=f56e165]: Додаткові курси
+                        - paragraph [ref=f56e166]: Minecraft, Тварини, Спів, Читання і Фонетика можуть бути включені в курс за бажанням учня.
+                        - img "additional-courses" [ref=f56e168]
+            - generic [ref=f56e169]:
+                - generic [ref=f56e170]: Батьки запитують
+                - generic [ref=f56e171]:
+                    - article [ref=f56e173]:
+                        - generic [ref=f56e174]:
+                            - img "general_questions_category" [ref=f56e175]
+                            - paragraph [ref=f56e176]: Загальні запитання
+                        - generic [ref=f56e177]:
+                            - group [ref=f56e178]:
+                                - paragraph [ref=f56e180] [cursor=pointer]: Що входить в пакет?
+                            - group [ref=f56e184]:
+                                - paragraph [ref=f56e186] [cursor=pointer]: "Яка тривалість індивідуального уроку підійде моїй дитині: 25 чи 55 хвилин?"
+                            - group [ref=f56e190]:
+                                - paragraph [ref=f56e192] [cursor=pointer]: А раптом моїй дитині не підходить онлайн-формат занять?
+                            - group [ref=f56e196]:
+                                - paragraph [ref=f56e198] [cursor=pointer]: Я сумніваюсь, що онлайн можна навчити правильній вимові
+                            - group [ref=f56e202]:
+                                - paragraph [ref=f56e204] [cursor=pointer]: Що таке розмовні клуби?
+                            - group [ref=f56e208]:
+                                - paragraph [ref=f56e210] [cursor=pointer]: Навіщо потрібна мобільна гра All Right?
+                    - generic [ref=f56e214]:
+                        - article [ref=f56e215]:
+                            - generic [ref=f56e216]:
+                                - img "learning_process_category" [ref=f56e217]
+                                - paragraph [ref=f56e218]: Організація процесу навчання
+                            - generic [ref=f56e219]:
+                                - group [ref=f56e220]:
+                                    - paragraph [ref=f56e222] [cursor=pointer]: Який розклад занять?
+                                - group [ref=f56e226]:
+                                    - paragraph [ref=f56e228] [cursor=pointer]: Що таке постійний розклад або вільне бронювання?
+                                - group [ref=f56e232]:
+                                    - paragraph [ref=f56e234] [cursor=pointer]: Чи будуть задані домашні завдання і в якому форматі?
+                                - group [ref=f56e238]:
+                                    - paragraph [ref=f56e240] [cursor=pointer]: Скільки уроків на тиждень нам потрібно для кращих результатів?
+                        - article [ref=f56e244]:
+                            - generic [ref=f56e245]:
+                                - img "teacher_program_category" [ref=f56e246]
+                                - paragraph [ref=f56e247]: Вчителі та програма
+                            - generic [ref=f56e248]:
+                                - group [ref=f56e249]:
+                                    - paragraph [ref=f56e251] [cursor=pointer]: Ваші вчителі кваліфіковані?
+                                - group [ref=f56e255]:
+                                    - paragraph [ref=f56e257] [cursor=pointer]: Що таке CEFR?
+                                - group [ref=f56e261]:
+                                    - paragraph [ref=f56e263] [cursor=pointer]: Що таке курс?
+                                - group [ref=f56e267]:
+                                    - paragraph [ref=f56e269] [cursor=pointer]: Що таке тематичні курси, наприклад англійська по грі Роблокс, Майнкрафт та інші?
+                        - article [ref=f56e273]:
+                            - generic [ref=f56e274]:
+                                - img "free_trial_lesson_category" [ref=f56e275]
+                                - paragraph [ref=f56e276]: Пробний урок
+                            - generic [ref=f56e277]:
+                                - group [ref=f56e278]:
+                                    - paragraph [ref=f56e280] [cursor=pointer]: Що потрібно, щоб записатися на безкоштовне заняття?
+                                - group [ref=f56e284]:
+                                    - paragraph [ref=f56e286] [cursor=pointer]: Чи повинні батьки бути присутніми на уроці?
+                                - group [ref=f56e290]:
+                                    - paragraph [ref=f56e292] [cursor=pointer]: А раптом дитині не сподобається вчитель?
+                                - group [ref=f56e296]:
+                                    - paragraph [ref=f56e298] [cursor=pointer]: Чи можу пройти пробний урок з телефону?
+                                - group [ref=f56e302]:
+                                    - paragraph [ref=f56e304] [cursor=pointer]: Чи володіє вчитель рідною мовою моєї дитини?
+                                - group [ref=f56e308]:
+                                    - paragraph [ref=f56e310] [cursor=pointer]: Як проводиться урок?
+                                - group [ref=f56e314]:
+                                    - paragraph [ref=f56e316] [cursor=pointer]: Як обрати вчителя?
+                        - article [ref=f56e320]:
+                            - generic [ref=f56e321]:
+                                - img "payment_category" [ref=f56e322]
+                                - paragraph [ref=f56e323]: Оплата
+                            - generic [ref=f56e324]:
+                                - group [ref=f56e325]:
+                                    - paragraph [ref=f56e327] [cursor=pointer]: Як оплатити уроки?
+                                - group [ref=f56e331]:
+                                    - paragraph [ref=f56e333] [cursor=pointer]: Чи може школа зберегти та скористатися даними платіжних карток клієнтів?
+                                - group [ref=f56e337]:
+                                    - paragraph [ref=f56e339] [cursor=pointer]: Що таке "Автоподовження"?
+                                - group [ref=f56e343]:
+                                    - paragraph [ref=f56e345] [cursor=pointer]: Що таке оплата частинами або розтермінування?
+                                - group [ref=f56e349]:
+                                    - paragraph [ref=f56e351] [cursor=pointer]: Якщо дитині не сподобається або ми купимо занадто багато уроків, чи можна буде повернути гроші за них?
+                                - group [ref=f56e355]:
+                                    - paragraph [ref=f56e357] [cursor=pointer]: Скільки розмовних клубів входить у пакет?
+                                - group [ref=f56e361]:
+                                    - paragraph [ref=f56e363] [cursor=pointer]: Чи можу я отримати чек за оплачені уроки?
+                                - group [ref=f56e367]:
+                                    - paragraph [ref=f56e369] [cursor=pointer]: Що таке підписка All Right Plus?
+                        - article [ref=f56e373]:
+                            - generic [ref=f56e374]:
+                                - img "bonuses_category" [ref=f56e375]
+                                - paragraph [ref=f56e376]: Бонуси та акції
+                            - generic [ref=f56e377]:
+                                - group [ref=f56e378]:
+                                    - paragraph [ref=f56e380] [cursor=pointer]: Що таке Перерахунок уроків в бонуси та бонусний баланс?
+                                - group [ref=f56e384]:
+                                    - paragraph [ref=f56e386] [cursor=pointer]: Чи є бонуси та акції для нових і постійних учнів?
+                                - group [ref=f56e390]:
+                                    - paragraph [ref=f56e392] [cursor=pointer]: Чи можна поєднати декілька акцій?
+                        - article [ref=f56e396]:
+                            - generic [ref=f56e397]:
+                                - img "training_grant_category" [ref=f56e398]
+                                - paragraph [ref=f56e399]: Грант на навчання
+                            - generic [ref=f56e400]:
+                                - group [ref=f56e401]:
+                                    - paragraph [ref=f56e403] [cursor=pointer]: Як працює грант?
+                                - group [ref=f56e407]:
+                                    - paragraph [ref=f56e409] [cursor=pointer]: Що таке "Курс Читання"?
+                                - group [ref=f56e413]:
+                                    - paragraph [ref=f56e415] [cursor=pointer]: З чого складається бібліотека корисних матеріалів?
+                                - group [ref=f56e419]:
+                                    - paragraph [ref=f56e421] [cursor=pointer]: Що таке розмовна практика з носіями мови у FUNtastic English Club?
+                                - group [ref=f56e425]:
+                                    - paragraph [ref=f56e427] [cursor=pointer]: Чи можу я використати грант на декілька дітей?
+                - button "Показати більше питань" [ref=f56e432] [cursor=pointer]
+            - link "Забронювати урок" [ref=f56e437] [cursor=pointer]:
+                - /url: "#unsuccessful-dashboard-book-lesson"
+        - contentinfo [ref=f56e535]:
+            - generic [ref=f56e536]:
+                - generic [ref=f56e537]:
+                    - generic [ref=f56e538]:
+                        - generic [ref=f56e539]:
+                            - link "AllRight home" [ref=f56e540] [cursor=pointer]:
+                                - /url: /
+                                - img "Allright Logo" [ref=f56e542]
+                            - generic [ref=f56e545]:
+                                - generic [ref=f56e546] [cursor=pointer]: uk
+                                - generic [ref=f56e550] [cursor=pointer]: UAH
+                        - generic [ref=f56e554]:
+                            - link "help@allright.com" [ref=f56e555] [cursor=pointer]:
+                                - /url: mailto:help@allright.com
+                            - generic [ref=f56e559]:
+                                - link " (094) 447 63 27" [ref=f56e560] [cursor=pointer]:
+                                    - /url: tel:380944476327
+                                - generic [ref=f56e563]: 9:00 – 21:00
+                            - list [ref=f56e564]:
+                                - listitem [ref=f56e565]:
+                                    - link "Whatsapp" [ref=f56e566] [cursor=pointer]:
+                                        - /url: https://wa.me/380680411021
+                                - listitem [ref=f56e569]:
+                                    - link "Viber bot" [ref=f56e570] [cursor=pointer]:
+                                        - /url: viber://chat?service=27730
+                                - listitem [ref=f56e573]:
+                                    - link "Instagram" [ref=f56e574] [cursor=pointer]:
+                                        - /url: https://www.instagram.com/allright_ua/
+                                - listitem [ref=f56e577]:
+                                    - link "Facebook" [ref=f56e578] [cursor=pointer]:
+                                        - /url: https://www.facebook.com/allrightUKR
+                                - listitem [ref=f56e580]:
+                                    - link "Facebook messenger" [ref=f56e581] [cursor=pointer]:
+                                        - /url: https://m.me/allrightUKR
+                                - listitem [ref=f56e584]:
+                                    - link "Youtube" [ref=f56e585] [cursor=pointer]:
+                                        - /url: https://www.youtube.com/@allright_com
+                    - navigation [ref=f56e587]:
+                        - generic [ref=f56e588]:
+                            - paragraph [ref=f56e589]: Продукти та методики
+                            - list [ref=f56e590]:
+                                - listitem [ref=f56e591]:
+                                    - link "Курси" [ref=f56e592] [cursor=pointer]:
+                                        - /url: https://stage.allright.com/uk/levels
+                                - listitem [ref=f56e593]:
+                                    - link "Викладачі" [ref=f56e594] [cursor=pointer]:
+                                        - /url: https://stage.allright.com/uk/t/online/repetytory-anhliiskoi-movy-dlia-ditei
+                                - listitem [ref=f56e595]:
+                                    - link "Розмовний клуб" [ref=f56e596] [cursor=pointer]:
+                                        - /url: https://stage.allright.com/uk/app/speaking-clubs
+                                - listitem [ref=f56e597]:
+                                    - link "Мобільний застосунок" [ref=f56e598] [cursor=pointer]:
+                                        - /url: https://stage.allright.com/uk/mobile-application
+                        - generic [ref=f56e599]:
+                            - paragraph [ref=f56e600]: Батькам
+                            - list [ref=f56e601]:
+                                - listitem [ref=f56e602]:
+                                    - link "Вартість навчання" [ref=f56e603] [cursor=pointer]:
+                                        - /url: https://stage.allright.com/uk/app/price
+                                - listitem [ref=f56e604]:
+                                    - link "Бонуси" [ref=f56e605] [cursor=pointer]:
+                                        - /url: https://stage.allright.com/uk/app/user/849755/invite
+                                - listitem [ref=f56e606]:
+                                    - link "All Right PLUS" [ref=f56e607] [cursor=pointer]:
+                                        - /url: https://stage.allright.com/uk/all-right-plus
+                                - listitem [ref=f56e608]:
+                                    - link "Englishdom" [ref=f56e609] [cursor=pointer]:
+                                        - /url: https://www.englishdom.com/ua/?utm_source=allright&utm_medium=referral&utm_campaign=allright
+                        - generic [ref=f56e610]:
+                            - paragraph [ref=f56e611]: Корисне
+                            - list [ref=f56e612]:
+                                - listitem [ref=f56e613]:
+                                    - link "Блог" [ref=f56e614] [cursor=pointer]:
+                                        - /url: https://stage.allright.com/uk/blog
+                                - listitem [ref=f56e615]:
+                                    - link "Робота для викладачів" [ref=f56e616] [cursor=pointer]:
+                                        - /url: https://stage.allright.com/uk/job-for-teachers
+                - separator [ref=f56e617]
+                - list [ref=f56e619]:
+                    - listitem [ref=f56e620]:
+                        - link "Service Rules and Code of Conduct" [ref=f56e621] [cursor=pointer]:
+                            - /url: https://stage.allright.com/legal/service-rules-and-code-of-conduct/uk.pdf
+                    - listitem [ref=f56e622]:
+                        - link "Payment and Refund Policy" [ref=f56e623] [cursor=pointer]:
+                            - /url: https://stage.allright.com/legal/payment-and-refund-policy/uk.pdf
+                    - listitem [ref=f56e624]:
+                        - link "Умови надання послуг" [ref=f56e625] [cursor=pointer]:
+                            - /url: https://stage.allright.com/legal/terms-of-services-allright/uk.pdf
+    - iframe [ref=f56e2]:
+
+    - iframe [ref=f56e532]:
+        - generic [ref=f58e1]:
+            - generic "Месенджер":
+                - region "Месенджер Intercom":
+                    - button "Відкрити програму для спілкування Intercom" [ref=f58e2] [cursor=pointer]

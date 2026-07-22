@@ -6,6 +6,10 @@ import { QuizMixin } from "@pages/mixins";
  */
 export const AppRoute = {
   quizEntry: "/uk/app/sign-up/long/charlie/age-range",
+  // Targeted deep-link for the user-info-name dialog regression (NOT part of the happy-path contract).
+  // The step renders directly (18/21) without running the whole funnel — used only by that focused test.
+  userInfoName:
+    "/uk/app/sign-up/long/charlie/user-info-name?utm_funnel=sign-up.long.charlie",
 } as const;
 export type AppRoute = (typeof AppRoute)[keyof typeof AppRoute];
 

@@ -1,0 +1,18 @@
+- generic [ref=e1]:
+    - generic [ref=e3]:
+        - generic [ref=e5]:
+            - button [ref=e7] [cursor=pointer]
+            - img "Allright Logo" [ref=e12]
+            - generic [ref=e14]: 19 / 21
+        - button "Вимкнути звук відео" [ref=e87] [cursor=pointer]
+        - generic [ref=e132]:
+            - generic [ref=e133]: Вкажіть номер телефону одного з батьків
+            - generic [ref=e137]:
+                - generic [ref=e140]:
+                    - button "Change country, selected Ukraine (0)" [ref=e142] [cursor=pointer]
+                    - textbox "0 50 123 4567" [active] [ref=e146]
+                - button "Продовжити" [ref=e153] [cursor=pointer]
+                - paragraph [ref=e152]: Ми поважаємо вашу конфіденційність та зобов'язуємося захищати ваші особисті дані.
+    - iframe [ref=e82]:
+
+    - button "Open Intercom Messenger" [ref=e83] [cursor=pointer]

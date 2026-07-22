@@ -21,7 +21,7 @@ export function quizLead(prefix: string): QuizLead {
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
     // Full E.164 so the intl-tel widget resolves the country and enables the CTA.
-    // Ukrainian mobile (+380 50 XXXXXXX); synthetic — never a real subscriber.
-    phone: `+38050${faker.string.numeric(7)}`,
+    // Ukrainian mobile (0 50 XXXXXXX); synthetic — never a real subscriber.
+    phone: `050${faker.string.numeric(7)}`,
   };
 }

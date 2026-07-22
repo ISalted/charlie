@@ -1,0 +1,23 @@
+- generic [ref=f26e1]:
+  - generic [ref=f26e3]:
+    - generic [ref=f26e5]:
+      - button [ref=f26e7] [cursor=pointer]
+      - img "Allright Logo" [ref=f26e12]
+      - generic [ref=f26e14]: 18 / 21
+    - generic [ref=f26e16]: Помилка завантаження
+    - generic [ref=f26e27]:
+      - generic [ref=f26e28]: Вкажіть імʼя одного з батьків
+      - generic [ref=f26e32]:
+        - textbox "Ім'я одного з батьків" [active] [ref=f26e35]
+        - button "Вказати код друга" [ref=f26e37] [cursor=pointer]
+        - button "Продовжити" [ref=f26e38] [cursor=pointer]
+        - generic [ref=f26e43]:
+          - paragraph [ref=f26e44]: Ми поважаємо вашу конфіденційність та зобов'язуємося захищати ваші особисті дані.
+          - paragraph [ref=f26e45]:
+            - text: Натискаючи кнопку "Продовжити", Ви приймаєте
+            - link "угоду користувача" [ref=f26e46] [cursor=pointer]:
+              - /url: /legal/terms-of-services-allright/uk.pdf
+            - text: .
+  - iframe [ref=f26e47]:
+    
+  - button "Open Intercom Messenger" [ref=f26e48] [cursor=pointer]

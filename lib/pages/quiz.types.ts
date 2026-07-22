@@ -22,12 +22,16 @@ export interface QuizRunResult {
   path: StepKind[];
 }
 
-/** The variant-independent business outcome, observed from the network during a completion run. */
+/**
+ * The variant-independent business outcome. Anchored on the ONE mutation the funnel always makes and
+ * we can observe without API creds: the account-create POST. The "trial booked" half of the business
+ * result is, in the live variant, a trial REQUEST (an admin schedules it later) — its confirmation is
+ * the terminal `/app/request-gotten` surface, captured by `runResult.reachedEnd`, NOT a booking POST
+ * (no `POST /api/v1/lessons` fires). See the completion test for how both halves are asserted.
+ */
 export interface QuizOutcome {
-  /** What the generic engine reported. */
+  /** What the generic engine reported (incl. `reachedEnd` = reached the request-gotten confirmation). */
   runResult: QuizRunResult;
   /** `POST /api/v1/users` returned 2xx during the run — the account was created. */
   accountCreated: boolean;
-  /** `POST /api/v1/lessons` returned 2xx during the run — the trial lesson was booked. */
-  trialBooked: boolean;
 }

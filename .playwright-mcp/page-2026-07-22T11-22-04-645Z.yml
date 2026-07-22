@@ -1,0 +1,35 @@
+- generic [active] [ref=f26e1]:
+  - generic [ref=f26e110]:
+    - text: З цим номером заявка на заняття вже надіслана. Будь ласка, введіть пароль для входу або відновіть його за допомогою кнопки "Забули пароль"
+    - generic "Dismiss this notification" [ref=f26e111] [cursor=pointer]
+  - generic [ref=f26e116]:
+    - generic [ref=f26e117]:
+      - link [ref=f26e120] [cursor=pointer]:
+        - /url: https://stage.allright.com/uk
+        - img "Allright Logo" [ref=f26e121]
+      - heading "Увійти в особистий кабінет" [level=2] [ref=f26e123]
+      - generic [ref=f26e124]:
+        - generic [ref=f26e125]:
+          - generic [ref=f26e126]:
+            - generic [ref=f26e127]: Пошта
+            - generic [ref=f26e129]: Номер телефону
+          - generic [ref=f26e131]:
+            - textbox "Email" [ref=f26e134]
+            - button "Отримати код" [ref=f26e135] [cursor=pointer]
+          - button "Вхід за допомогою паролю" [ref=f26e136] [cursor=pointer]
+        - generic [ref=f26e137]:
+          - heading "Немає акаунту?" [level=4] [ref=f26e138]
+          - link "Реєстрація" [ref=f26e139] [cursor=pointer]:
+            - /url: /uk/app/sign-up?utm_funnel=sign-up.long.charlie
+    - generic [ref=f26e140]:
+      - link "Завантажити в" [ref=f26e141] [cursor=pointer]:
+        - /url: https://apps.apple.com/ua/app/all-right-english-school/id1474799842
+      - link "Завантажити в" [ref=f26e149] [cursor=pointer]:
+        - /url: https://play.google.com/store/apps/details?id=io.allright.classroom
+  - iframe [ref=f26e47]:
+    
+  - iframe [ref=f26e53]:
+    - generic [ref=f28e1]:
+      - generic "Месенджер":
+        - region "Месенджер Intercom":
+          - button "Відкрити програму для спілкування Intercom" [ref=f28e2] [cursor=pointer]

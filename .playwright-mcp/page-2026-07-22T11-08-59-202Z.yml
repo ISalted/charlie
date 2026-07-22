@@ -1,0 +1,36 @@
+- generic [active] [ref=e1]:
+    - generic [ref=e3]:
+        - generic [ref=e5]:
+            - button [ref=e7] [cursor=pointer]
+            - img "Allright Logo" [ref=e12]
+            - generic [ref=e14]: 19 / 21
+        - button "Вимкнути звук відео" [ref=e92] [cursor=pointer]
+        - generic [ref=e24]:
+            - generic [ref=e97]:
+                - generic [ref=e98]: Вкажіть номер телефону одного з батьків
+                - generic [ref=e102]:
+                    - generic [ref=e105]:
+                        - button "Change country, selected Ukraine (0)" [ref=e107] [cursor=pointer]
+                        - textbox "0 50 123 4567" [ref=e111]: "0"
+                    - button "Продовжити" [disabled]
+                    - paragraph [ref=e117]: Ми поважаємо вашу конфіденційність та зобов'язуємося захищати ваші особисті дані.
+            - generic [ref=e27]:
+                - generic [ref=e28]: Вкажіть імʼя одного з батьків
+                - generic [ref=e32]:
+                    - textbox "Ім'я одного з батьків" [ref=e35]: Тест
+                    - button "Вказати код друга" [ref=e37] [cursor=pointer]
+                    - button "Продовжити" [ref=e38] [cursor=pointer]
+                    - generic [ref=e43]:
+                        - paragraph [ref=e44]: Ми поважаємо вашу конфіденційність та зобов'язуємося захищати ваші особисті дані.
+                        - paragraph [ref=e45]:
+                            - text: Натискаючи кнопку "Продовжити", Ви приймаєте
+                            - link "угоду користувача" [ref=e46] [cursor=pointer]:
+                                - /url: /legal/terms-of-services-allright/uk.pdf
+                            - text: .
+    - iframe [ref=e47]:
+
+    - iframe [ref=e53]:
+        - generic [ref=f2e1]:
+            - generic "Месенджер":
+                - region "Месенджер Intercom":
+                    - button "Відкрити програму для спілкування Intercom" [ref=f2e2] [cursor=pointer]
