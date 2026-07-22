@@ -1,101 +1,83 @@
 # Charlie AQA
 
-Automated coverage for the **Charlie registration quiz** — the paid-traffic sign-up funnel of the
-Allright app. A user answers quiz steps and, on completion, an **account is created and a trial lesson
-is booked**. This funnel is revenue-critical, so the goal is to catch a broken funnel fast.
+Automated coverage for the **Charlie registration quiz** — Allright's paid-traffic sign-up funnel.
+A user answers quiz steps and, on completion, an account is created and a trial lesson is requested.
+The funnel is revenue-critical, so the goal is to **catch it breaking fast**.
 
-> **The quiz is not static.** It changes constantly and almost always runs **several A/B tests at once** —
-> steps, texts, order, and the set of screens differ between users and week to week. This suite is designed
-> around that reality, not against it.
+**The quiz is not static.** It changes constantly and almost always runs several A/B tests at once —
+steps, texts, order, and the set of screens differ between users and week to week. This suite is
+built around that reality: it asserts **invariants + the business outcome**, and navigates the
+variable middle **generically** (by control shape, not by copy) — so an A/B flip needs no rewrite.
 
-## The approach in one screen — three tiers by stability
+## Part B — Variant 1: resilient business-outcome check
 
-| Tier | What | How we treat it |
-|---|---|---|
-| **Deterministic** | Invariants true in *every* variant (entry loads, each step has one advance affordance, progress moves forward, no dead-ends, no console/4xx-5xx errors) **+ the business outcome (account created + trial booked)** | **Assert hard.** Outcome via the most stable signal: API > network-response intercept > a stable success surface. |
-| **AI-agent / heuristic** | Navigating the *variable middle* — read whatever step is on screen, pick a valid answer, advance, until completion | **Adaptive, not pinned.** Reach the end; don't verify specific step content. |
-| **Don't fix** | Exact copy, step count/order, which A/B variant, visuals | **Never assert.** At most an informational drift snapshot that never fails the build. |
+The core deliverable is [`tests/web/quiz/completion.web.test.ts`](tests/web/quiz/completion.web.test.ts)
+(`QZ-002`, `@mutating`). It drives **whatever variant is served** to the end and asserts the
+variant-independent result:
 
-**Why it survives A/B changes without a rewrite:** the assertions sit on invariants + the outcome (which
-don't change); the variable middle is navigated generically, not scripted step-by-step. No per-step selectors
-to maintain when a variant flips.
+- **Account created** — `POST /api/v1/users` returned 2xx (read from the network, no API creds needed).
+- **Trial requested** — the flow reached the confirmation surface `/app/request-gotten`.
 
-## Layout
+> Observed on stage: the trial is a **request** an admin schedules later — there is **no** immediate
+> booking call (`POST /api/v1/lessons` never fires). So its variant-independent proof is the
+> confirmation surface, not a booking POST.
 
-```
-lib/
-  config/           env config (BASE_URL, API_URL, oracle creds) via dotenv / CI secrets
-  fixtures.ts       the 3 fixtures: webClient / apiClient / helpers
-  pages/
-    base.page.ts        BasePage
-    allright-app.ts     WebClient (composes page mixins) + AppRoute
-    mixins.ts           page mixins
-    quiz.page.ts        the light QuizFlow object (generic step engine — filled by the skill pipeline)
-    quiz.types.ts       StepKind / QuizRunResult
-  data/quiz/          quizLead(prefix) → synthetic tagged leads
-  api/api-client.ts   the OUTCOME ORACLE (verify user + booking)
-  helpers/            step decorator + generic utils
-tests/web/quiz/       the thin tests
-test-design/quiz/     REQUIREMENTS.md + CHECKLIST.md (design artifacts)
-.github/workflows/aqa.yml   GitHub Actions (schedule + workflow_dispatch)
-.claude/              the AI skill pipeline + canon docs (see below)
-```
+A second non-mutating test, [`smoke.web.test.ts`](tests/web/quiz/smoke.web.test.ts) (`QZ-001`), is the
+cheap health check: the entry loads and the generic engine classifies the first step on any variant.
+
+## How it survives A/B changes
+
+The engine ([`lib/pages/quiz.page.ts`](lib/pages/quiz.page.ts)) is a **generic step loop**, not a
+per-step script: on each screen it reads the *shape* of the controls — input → fill, options →
+pick one, only a CTA → click — and advances until it reaches a success surface. It also clears the
+interstitial overlays the funnel throws up (the required "who's filling this?" picker, the random
+exit-intent popup). Only **four contract points** would force a rewrite, and none is A/B content:
+`[data-step-name]`, the primary-CTA class `.btn.orange`, `POST /api/v1/users`, and the success URL.
+
+Everything else — copy, step order/count, which variant — the tests ignore by design.
 
 ## Run
 
 ```bash
 npm install
 npx playwright install --with-deps chromium
-cp .env.example .env         # fill BASE_URL, and API_URL/creds if available
-
-npm test                     # run all
-npm run grep -- @smoke       # run the critical funnel check
-npm run ui                   # Playwright UI mode
-npm run report               # open the last HTML report
+cp .env.example .env          # BASE_URL is enough to start; API_URL/token optional
+npm test                      # all tests
+npm run grep -- @smoke        # non-mutating funnel health check only
+npm run ui                    # Playwright UI mode
+npm run report                # open the last HTML report
 ```
 
-**Reporting is Playwright-native:** HTML report + `trace: retain-on-failure`. Open a failure's trace with
-`npx playwright show-trace`. On CI the GitHub Actions job result is the honest pass/fail (no masking).
+Reporting is Playwright-native: HTML report + `trace: retain-on-failure`. Open a failure's trace with
+`npx playwright show-trace`.
 
-## CI
+## CI — [`.github/workflows/aqa.yml`](.github/workflows/aqa.yml)
 
-`.github/workflows/aqa.yml` runs on GitHub-hosted `ubuntu-latest`, triggered by **`schedule`** (synthetic
-monitoring — the primary lane) and **`workflow_dispatch`** (on-demand, with a `grep` filter). Not per-PR: we
-don't own the quiz's product repo, and each completion creates real stage entities. Secrets: `BASE_URL`,
-`API_URL`, `API_TOKEN`, `QUIZ_EMAIL_DOMAIN`.
+Runs on GitHub-hosted `ubuntu-latest`, triggered by **`schedule`** (every 6h — synthetic monitoring of
+the money path) and **`workflow_dispatch`** (on-demand, with a `--grep` input). **Not per-PR:** we don't
+own the quiz's product repo, and every completion creates real stage entities. Secrets: `BASE_URL`,
+`API_URL`, `API_TOKEN`, `QUIZ_EMAIL_DOMAIN`. The job result is the honest pass/fail; the HTML report is
+uploaded as an artifact.
 
-## Assumptions made (validate with the Charlie team)
+## Assumptions (confirm with the Charlie team)
 
-- **Outcome oracle signal.** The strongest oracle is a stage **API** to confirm the created user + booking.
-  The endpoints in `lib/api/api-client.ts` are **placeholders**; until `API_URL` + creds are provided, the
-  suite falls back to the **network-intercept** oracle (`helpers.waitForOkResponse`). Request the real
-  contract from the Charlie team.
-- **Synthetic lead domain.** `quizLead()` tags emails with `QUIZ_EMAIL_DOMAIN` (default `aqa.example.com`) —
-  replace with the test domain the team designates for synthetic sign-ups so entities are identifiable and
-  don't pollute analytics.
-- **No CAPTCHA / real payment on the happy path.** If completion requires solving a CAPTCHA, an OTP, or real
-  payment, that's a hard blocker — request a stage test-hook; the suite never bypasses bot-detection or
-  submits real financial data.
+- **Outcome signal.** The strongest oracle is a stage API confirming the created user + request. The
+  endpoints in [`lib/api/api-client.ts`](lib/api/api-client.ts) are placeholders; without `API_URL` +
+  a token the suite uses the network-intercept oracle (`helpers.captureQuizOutcome`).
+- **Synthetic lead domain.** `quizLead()` tags emails with `QUIZ_EMAIL_DOMAIN` (default
+  `aqa.example.com`) — swap for the domain the team designates for synthetic sign-ups.
+- **No CAPTCHA / OTP / real payment on the happy path.** If completion ever requires one, that's a hard
+  blocker — request a stage test-hook. The suite never bypasses bot-detection or submits real data.
 
 ## Guardrails
 
-- Completion has **real side effects on live stage** (a real user + trial booking) → synthetic tagged leads
-  only, runs kept minimal, prefer the API oracle over re-running the flow.
+- Completion has **real side effects** on live stage → synthetic tagged leads only, runs kept minimal.
 - Never bypass/solve CAPTCHA; never enter real payment or credential data.
-- Never assert on A/B-variable content. Branch `aqa/<short-desc>` → PR to `main`; a human reviews and merges.
-
-## The AI skill pipeline (`.claude/`)
-
-Work flows through focused skills, each owning one layer:
-`/analyze-requirements` → `/test-design` → `/analyze-page` (locators) → `/sdk-builder` (methods) →
-`/test-write` (the thin test). Support: `/run`, `/analyze-report`, `/analyze-test`, `/open-pr`, `/analyze-cost`.
-The always-on rules live in `CLAUDE.md`; the deep detail in `.claude/docs/`.
+- Never assert on A/B-variable content. Branch `aqa/<short-desc>` → PR to `main`; a human merges.
 
 ## What I'd do next with more time
 
-- Fill the `QuizFlow` engine locators + methods against the live stage quiz (`/analyze-page` → `/sdk-builder`),
-  then the first thin completion test (`/test-write`).
-- Wire the real API oracle once the Charlie team provides the endpoints/creds.
-- Add an informational **drift snapshot** artifact (step kinds/count per run) that reports A/B changes without
-  failing the build.
-- Add alerting on a failed scheduled run (the funnel being down = money burning).
+- Wire the real **API oracle** once the team provides endpoints/creds (stronger than the network signal).
+- **Alerting** on a failed scheduled run (funnel down = money burning) — Slack summary + report link.
+- An informational **drift snapshot** (step kinds/count per run) that flags A/B changes without failing.
+- Parallel runs via separate synthetic profiles once volume justifies the data management.

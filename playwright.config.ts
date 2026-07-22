@@ -23,7 +23,7 @@ export default defineConfig({
   // Cap every locator action: with no actionTimeout a single read of an absent element
   // (e.g. `[data-step-name]` on the terminal page) auto-waits until the whole test times out —
   // one such read ate 26s in a real run. 15s is generous for the live funnel yet bounds any stall.
-  timeout: 120_000,
+  timeout: 60_000,
   expect: { timeout: 10_000 },
   use: {
     baseURL: process.env.BASE_URL ?? "https://stage.allright.com",

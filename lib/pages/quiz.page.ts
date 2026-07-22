@@ -218,12 +218,6 @@ export class QuizPage extends BasePage {
     return QuizPage.SUCCESS_URL.test(this.page.url());
   }
 
-  /** The active step's stable id (`data-step-name`), or null. Content-agnostic progress signal. */
-  @step()
-  async currentStepName(): Promise<string | null> {
-    return this.currentStepId();
-  }
-
   /** Read the current progress counter text ("N / M"), or null if absent. */
   @step()
   async progressText(): Promise<string | null> {
