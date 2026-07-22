@@ -22,7 +22,7 @@ test.describe("Charlie quiz — completion @web @quiz @completion @mutating", ()
     helpers,
   }) => {
     // Completing ~20 steps with real waits far exceeds Playwright's 30s default.
-    test.setTimeout(180_000);
+    test.setTimeout(60_000);
     const lead = quizLead("completion");
 
     // Act: drive the variable middle to the end while watching the two outcome requests.
