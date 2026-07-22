@@ -70,8 +70,12 @@ export class QuizPage extends BasePage {
   private readonly leavingPopup: Locator = this.page.locator("dialog.popup-leaving-page[open]");
   private readonly leavingPopupDismiss: Locator = this.leavingPopup.locator(".popup-leaving-page__btn");
 
-  /** A role-based blocking modal (e.g. the required "who's filling this?" picker). */
-  private readonly dialog: Locator = this.page.locator('[role="dialog"]');
+  /** A blocking modal other than the leaving-page popup — e.g. the required "who's filling this?"
+   *  picker, which is a native `<dialog>` (no role attribute), so match `dialog[open]` too. Exclude
+   *  the leaving-page popup here — it's handled by its own branch first. */
+  private readonly dialog: Locator = this.page.locator(
+    'dialog[open]:not(.popup-leaving-page), [role="dialog"]',
+  );
 
   /** The dialog's ✕ close control (accessible name "Close"). */
   private readonly dialogClose: Locator = this.dialog.getByRole("button", { name: "Close" });
@@ -236,29 +240,49 @@ export class QuizPage extends BasePage {
     await input.pressSequentially(value);
   }
 
-  /** Click the CTA if this step has an enabled one, then wait until the step changes or we complete. */
+  /**
+   * Leave the current step. Click its CTA (if any) and wait for the step to change. The leaving-page
+   * popup often fires ON this click (esp. on multi-select), intercepting it — so if it appears we
+   * DISMISS it and RE-CLICK the CTA (never the answer option: re-clicking a multi-select option would
+   * toggle the selection back off). Bounded retries; single-choice that already auto-advanced returns
+   * immediately.
+   */
   private async advanceFrom(beforeStepId: string | null): Promise<void> {
-    if (
-      (await this.primaryCta.isVisible().catch(() => false)) &&
-      (await this.primaryCta.isEnabled().catch(() => false))
-    ) {
-      await this.primaryCta.click().catch(() => {});
+    for (let attempt = 0; attempt < 4; attempt += 1) {
+      // Clear a popup that intercepted a previous attempt, then re-read where we actually are.
+      if ((await this.leavingPopup.count().catch(() => 0)) > 0) {
+        await this.handleDialogIfPresent();
+        await this.settleStep();
+      }
+      if (this.page.url().includes("/app/dashboard")) return;
+      // A REQUIRED dialog appeared (e.g. the "who's filling this?" picker) — hand back so the loop's
+      // handleDialogIfPresent answers it; hammering the CTA behind the overlay would just waste time.
+      if (await this.dialog.first().isVisible().catch(() => false)) return;
+      const current = await this.currentStepId();
+      if (current !== null && current !== beforeStepId) return; // already advanced
+
+      if (
+        (await this.primaryCta.isVisible().catch(() => false)) &&
+        (await this.primaryCta.isEnabled().catch(() => false))
+      ) {
+        await this.primaryCta.click().catch(() => {});
+      }
+      await this.page
+        .waitForFunction(
+          (prev: string | null) => {
+            if (location.pathname.includes("/app/dashboard")) return true;
+            // an overlay intercepted the advance → stop waiting; the loop clears it and we retry.
+            if (document.querySelector("dialog[open], [role=dialog]")) return true;
+            const steps = document.querySelectorAll("[data-step-name]");
+            for (let i = 0; i < steps.length; i += 1) {
+              if (steps[i].getAttribute("data-step-name") !== prev) return true;
+            }
+            return false;
+          },
+          beforeStepId,
+          { timeout: 15000 },
+        )
+        .catch(() => {}); // never throw from the engine; reachedEnd is judged by isComplete()
     }
-    await this.page
-      .waitForFunction(
-        (prev: string | null) => {
-          if (location.pathname.includes("/app/dashboard")) return true;
-          // The leaving-page popup unmounts the step — stop waiting so the loop can dismiss it next.
-          if (document.querySelector("dialog.popup-leaving-page[open]")) return true;
-          const steps = document.querySelectorAll("[data-step-name]");
-          for (let i = 0; i < steps.length; i += 1) {
-            if (steps[i].getAttribute("data-step-name") !== prev) return true;
-          }
-          return false;
-        },
-        beforeStepId,
-        { timeout: 20000 },
-      )
-      .catch(() => {}); // reachedEnd is judged by isComplete(); never throw from the engine
   }
 }
