@@ -19,13 +19,13 @@ test.describe("Charlie quiz — completion @web @quiz @completion @mutating", ()
     await webClient.goTo(AppRoute.quizEntry);
   });
 
-  test.only("QZ-002: completing the quiz creates the account and submits a trial request @web @quiz @completion @mutating", async ({
+  test("QZ-002: completing the quiz creates the account and submits a trial request @web @quiz @completion @mutating", async ({
     webClient,
     helpers,
   }) => {
     // Completing ~21 steps of a live funnel (real waits, transitions, interstitials) takes ~1min
     // even on a healthy run — 60s sits right on the edge. Give it a realistic budget.
-    test.setTimeout(120_000);
+    test.setTimeout(60_000);
     const lead = quizLead("completion");
 
     // Act: drive the variable middle to the end while watching the account-create request.
