@@ -64,8 +64,17 @@ export class QuizPage extends BasePage {
 
   // ── Overlay dialogs (interstitial modals that interrupt the flow) ──
 
-  /** A blocking overlay modal (upsell urgency popup, or the required "who's filling this?" picker). */
-  private readonly dialog: Locator = this.page.locator('[role="dialog"]');
+  /** A blocking overlay modal (the required "who's filling this?" picker, etc.). */
+  private readonly dialog: Locator = this.page.locator('dialog[open], [role="dialog"]');
+
+  /**
+   * The random "leaving-page" exit-intent popup — a native `<dialog class="popup-leaving-page">` that
+   * fires at ANY step and UNMOUNTS the step behind it (so `[data-step-name]` disappears until it's
+   * dismissed). Matched by its stable BEM classes (content-agnostic, locale-independent), verified live:
+   * clicking `.popup-leaving-page__btn` closes it and remounts the step (it does NOT actually book).
+   */
+  private readonly leavingPopup: Locator = this.page.locator("dialog.popup-leaving-page");
+  private readonly leavingPopupDismiss: Locator = this.page.locator(".popup-leaving-page__btn");
 
   /** The dialog's ✕ close control (accessible name "Close"). Dismisses a pure-upsell overlay. */
   private readonly dialogClose: Locator = this.dialog.getByRole("button", { name: "Close" });
@@ -103,10 +112,17 @@ export class QuizPage extends BasePage {
   /** Provide a VALID answer for whatever step is on screen, by shape/persona — never by label. */
   @step()
   async answerCurrentStep(persona: QuizLead): Promise<void> {
+    await this.handleDialogIfPresent(); // a timed popup may have appeared since the loop top
     switch (await this.detectStep()) {
       case "single-choice":
       case "multi-choice":
-        await this.optionAt(0).click();
+        // Bounded + one retry: if the timed popup covers the option, clear it and click again.
+        await this.optionAt(0)
+          .click({ timeout: 10_000 })
+          .catch(async () => {
+            await this.handleDialogIfPresent();
+            await this.optionAt(0).click({ timeout: 10_000 }).catch(() => {});
+          });
         break;
       case "text":
       case "date":
@@ -121,12 +137,23 @@ export class QuizPage extends BasePage {
   /** Click the primary advance CTA (if this step has one) and wait for the step to actually change. */
   @step()
   async advance(): Promise<void> {
-    await this.advanceFrom(await this.currentStepId());
+    await this.advancePastStep(await this.currentStepId());
   }
 
-  /** Dismiss/answer a blocking overlay dialog if one is open (required picker → answer; upsell → close). */
+  /**
+   * Clear any blocking overlay so the flow can proceed. Handles, in order:
+   *  1. the random "leaving-page" exit-intent popup → click its CTA span (dismisses + remounts the step);
+   *  2. a REQUIRED picker dialog (e.g. "who is filling this?") → pick its first option;
+   *  3. any other modal → close it.
+   * Safe to call before every action; a no-op when nothing is open.
+   */
   @step()
   async handleDialogIfPresent(): Promise<void> {
+    if ((await this.leavingPopupDismiss.count().catch(() => 0)) > 0) {
+      await this.leavingPopupDismiss.click().catch(() => {});
+      await this.leavingPopup.waitFor({ state: "detached", timeout: 5000 }).catch(() => {});
+      return;
+    }
     if (!(await this.dialog.isVisible().catch(() => false))) return;
     if ((await this.dialogChoiceButtons.count().catch(() => 0)) > 0) {
       await this.dialogChoiceButtons.first().click().catch(() => {});
@@ -159,6 +186,7 @@ export class QuizPage extends BasePage {
     let stepsTaken = 0;
 
     for (let i = 0; i < QuizPage.MAX_STEPS; i++) {
+      await this.settleStep(); // wait out the liquid-fire transition before touching anything
       await this.handleDialogIfPresent();
       if (await this.isComplete()) return { reachedEnd: true, stepsTaken, path };
 
@@ -167,7 +195,7 @@ export class QuizPage extends BasePage {
       stepsTaken += 1;
 
       await this.answerCurrentStep(persona);
-      await this.advanceFrom(before); // clicks the CTA if present; single-choice already advanced
+      await this.advancePastStep(before); // robustly leave the step (CTA + any interstitial it triggers)
     }
 
     return { reachedEnd: await this.isComplete(), stepsTaken, path };
@@ -177,6 +205,24 @@ export class QuizPage extends BasePage {
 
   private async currentStepId(): Promise<string | null> {
     return this.stepContainer.getAttribute("data-step-name").catch(() => null);
+  }
+
+  /**
+   * Wait for a liquid-fire transition to finish: exactly ONE active step in the DOM (or completed).
+   * Prevents acting on the outgoing step that is still animating out (two `[data-step-name]` coexist).
+   */
+  private async settleStep(): Promise<void> {
+    await this.page
+      .waitForFunction(
+        () =>
+          location.pathname.includes("/app/dashboard") ||
+          // an overlay is up (it unmounts the step) → return so handleDialogIfPresent can clear it
+          !!document.querySelector("dialog.popup-leaving-page, dialog[open], [role=dialog]") ||
+          document.querySelectorAll("[data-step-name]").length === 1,
+        undefined,
+        { timeout: 15000 },
+      )
+      .catch(() => {});
   }
 
   /** Fill the visible input with the persona value matching its shape (phone / email / name). */
@@ -195,27 +241,43 @@ export class QuizPage extends BasePage {
     await input.pressSequentially(value);
   }
 
-  /** Click the CTA if this step has an enabled one, then wait until the step changes or we complete. */
-  private async advanceFrom(beforeStepId: string | null): Promise<void> {
-    if (
-      (await this.primaryCta.isVisible().catch(() => false)) &&
-      (await this.primaryCta.isEnabled().catch(() => false))
-    ) {
-      await this.primaryCta.click().catch(() => {});
-    }
-    await this.page
+  /** True if we've already left `before` (advanced to a new step, or completed). */
+  private async isPast(before: string | null): Promise<boolean> {
+    if (this.page.url().includes("/app/dashboard")) return true;
+    const current = await this.currentStepId();
+    return current !== null && current !== before;
+  }
+
+  /** Wait (bounded) for the active step to differ from `before`, or for completion. */
+  private async stepChanged(before: string | null, timeoutMs: number): Promise<boolean> {
+    return this.page
       .waitForFunction(
         (prev: string | null) => {
           if (location.pathname.includes("/app/dashboard")) return true;
           const steps = document.querySelectorAll("[data-step-name]");
-          for (let i = 0; i < steps.length; i += 1) {
-            if (steps[i].getAttribute("data-step-name") !== prev) return true;
-          }
-          return false;
+          return steps.length > 0 && steps[steps.length - 1].getAttribute("data-step-name") !== prev;
         },
-        beforeStepId,
-        { timeout: 20000 },
+        before,
+        { timeout: timeoutMs },
       )
-      .catch(() => {}); // reachedEnd is judged by isComplete(); never throw from the engine
+      .then(() => true)
+      .catch(() => false);
+  }
+
+  /**
+   * Leave the current step robustly. Clicking the CTA can itself trigger an interstitial (an upsell
+   * popup, or the "who is filling this?" picker), so each attempt: click the CTA (if enabled) →
+   * dismiss/answer whatever dialog opened → re-check. We re-click ONLY the CTA across attempts,
+   * never the answer option (re-clicking a multi-select option would toggle it back off).
+   */
+  private async advancePastStep(before: string | null): Promise<void> {
+    for (let attempt = 0; attempt < 4; attempt += 1) {
+      if (await this.isPast(before)) return; // single-choice already auto-advanced
+      if (await this.primaryCta.isEnabled().catch(() => false)) {
+        await this.primaryCta.click().catch(() => {});
+      }
+      await this.handleDialogIfPresent(); // an interstitial the advance itself popped up
+      if (await this.stepChanged(before, 6000)) return;
+    }
   }
 }
