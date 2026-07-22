@@ -1,0 +1,18 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e5]:
+      - button [ref=e7] [cursor=pointer]
+      - img "Allright Logo" [ref=e12]
+      - generic [ref=e14]: 3 / 21
+    - button "Вимкнути звук відео" [ref=e101] [cursor=pointer]
+    - generic [ref=e122]:
+      - generic [ref=e123]: Як часто ви хочете навчатися?
+      - generic [ref=e125]:
+        - button "рази в тиждень" [ref=e127] [cursor=pointer]
+        - generic [ref=e131]:
+          - generic: Популярний
+          - button "рази в тиждень" [ref=e132] [cursor=pointer]
+        - button "рази в тиждень" [ref=e137] [cursor=pointer]
+  - iframe [ref=e96]:
+    
+  - button "Open Intercom Messenger" [ref=e97] [cursor=pointer]

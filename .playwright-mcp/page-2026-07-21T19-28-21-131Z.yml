@@ -1,0 +1,52 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e5]:
+      - button [disabled] [ref=e7]
+      - img "Allright Logo" [ref=e12]
+      - generic [ref=e14]: 21 / 21
+    - button "Вимкнути звук відео" [ref=e101] [cursor=pointer]
+    - generic [ref=e24]:
+      - generic [ref=e386]:
+        - generic [ref=e387]: Завершіть бронювання пробного уроку
+        - generic [ref=e390]:
+          - generic [ref=e391]:
+            - paragraph [ref=e392]: "Оберіть день:"
+            - list [ref=e393]:
+              - listitem [ref=e394] [cursor=pointer]:
+                - paragraph [ref=e395]: вівторок
+                - paragraph [ref=e396]: 28 липня
+          - generic [ref=e397]:
+            - paragraph [ref=e398]: Коли вам зручно відвідати урок?
+            - generic [ref=e399]:
+              - button "ранок" [ref=e400] [cursor=pointer]
+              - button "день" [ref=e401] [cursor=pointer]
+              - button "вечір" [ref=e402] [cursor=pointer]
+          - generic [ref=e403]:
+            - paragraph [ref=e404]: "Оберіть час уроку:"
+            - generic [ref=e405]:
+              - button "12:00" [disabled] [ref=e406]
+              - button "12:30" [disabled] [ref=e407]
+              - button "13:00" [ref=e408] [cursor=pointer]
+              - button "13:30" [ref=e409] [cursor=pointer]
+              - button "14:00" [ref=e410] [cursor=pointer]
+              - button "14:30" [ref=e411] [cursor=pointer]
+              - button "15:00" [disabled] [ref=e412]
+              - button "15:30" [disabled] [ref=e413]
+          - generic [ref=e415]:
+            - button "Kyiv UTC +3" [ref=e416] [cursor=pointer]
+            - button [ref=e417] [cursor=pointer]
+        - button "Забронювати урок" [ref=e420] [cursor=pointer]
+      - generic [ref=e362]:
+        - generic [ref=e363]: Вкажіть Email одного з батьків
+        - generic [ref=e367]:
+          - textbox "Ваш е-mail" [ref=e371]: aqa.charlie.0721t1927@example.com
+          - button "Продовжити" [active] [ref=e383] [cursor=pointer]
+          - generic [ref=e372] [cursor=pointer]: Пропустити
+          - paragraph [ref=e378]: Ми поважаємо вашу конфіденційність та зобов'язуємося захищати ваші особисті дані.
+  - iframe [ref=e96]:
+    
+  - iframe [ref=e380]:
+    - generic [ref=f17e1]:
+      - generic "Месенджер":
+        - region "Месенджер Intercom":
+          - button "Відкрити програму для спілкування Intercom" [ref=f17e2] [cursor=pointer]

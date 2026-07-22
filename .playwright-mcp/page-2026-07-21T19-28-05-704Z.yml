@@ -1,0 +1,21 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e5]:
+      - button [disabled] [ref=e7]
+      - img "Allright Logo" [ref=e12]
+      - generic [ref=e14]: 20 / 21
+    - button "Вимкнути звук відео" [ref=e101] [cursor=pointer]
+    - generic [ref=e362]:
+      - generic [ref=e363]: Вкажіть Email одного з батьків
+      - generic [ref=e367]:
+        - textbox "Ваш е-mail" [active] [ref=e371]: aqa.charlie.0721t1927@example.com
+        - button "Продовжити" [ref=e383] [cursor=pointer]
+        - generic [ref=e372] [cursor=pointer]: Пропустити
+        - paragraph [ref=e378]: Ми поважаємо вашу конфіденційність та зобов'язуємося захищати ваші особисті дані.
+  - iframe [ref=e96]:
+    
+  - iframe [ref=e380]:
+    - generic [ref=f17e1]:
+      - generic "Месенджер":
+        - region "Месенджер Intercom":
+          - button "Відкрити програму для спілкування Intercom" [ref=f17e2] [cursor=pointer]

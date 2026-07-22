@@ -1,0 +1,23 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e5]:
+      - button [ref=e7] [cursor=pointer]
+      - img "Allright Logo" [ref=e12]
+      - generic [ref=e14]: 1 / 21
+    - generic [ref=e16]: Помилка завантаження
+    - generic [ref=e27]:
+      - generic [ref=e28]: Скільки років дитині?
+      - generic [ref=e31]:
+        - button "4" [ref=e33] [cursor=pointer]
+        - button "5" [ref=e38] [cursor=pointer]
+        - button "6" [ref=e43] [cursor=pointer]
+        - button "7" [ref=e48] [cursor=pointer]
+        - button "8" [ref=e53] [cursor=pointer]
+        - button "9" [ref=e58] [cursor=pointer]
+        - button "10" [ref=e63] [cursor=pointer]
+        - button "11" [ref=e68] [cursor=pointer]
+        - button "12" [ref=e73] [cursor=pointer]
+        - button "13+ років" [ref=e78] [cursor=pointer]
+  - iframe [ref=e96]:
+    
+  - button "Open Intercom Messenger" [ref=e97] [cursor=pointer]

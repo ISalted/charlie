@@ -1,0 +1,23 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e5]:
+      - button [ref=e7] [cursor=pointer]
+      - img "Allright Logo" [ref=e12]
+      - generic [ref=e14]: 17 / 21
+    - button "Вимкнути звук відео" [ref=e101] [cursor=pointer]
+    - generic [ref=e239]:
+      - generic [ref=e240]: Оберіть інтереси дитини
+      - generic [ref=e243]:
+        - button "Роблокс" [ref=e244] [cursor=pointer]
+        - button "Подорожі" [ref=e248] [cursor=pointer]
+        - button "Креативність" [ref=e251] [cursor=pointer]
+        - button "Майнкрафт" [ref=e254] [cursor=pointer]
+        - button "Тварини" [ref=e257] [cursor=pointer]
+        - button "Малювання" [ref=e260] [cursor=pointer]
+        - button "Конструктор" [ref=e263] [cursor=pointer]
+        - button "Принцеси Disney" [ref=e266] [cursor=pointer]
+        - generic [ref=e269]:
+          - button "Продовжити" [disabled]
+  - iframe [ref=e96]:
+    
+  - button "Open Intercom Messenger" [ref=e97] [cursor=pointer]

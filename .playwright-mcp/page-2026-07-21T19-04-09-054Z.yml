@@ -1,0 +1,15 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e5]:
+      - button [ref=e7] [cursor=pointer]
+      - img "Allright Logo" [ref=e12]
+      - generic [ref=e14]: 2 / 21
+    - button "Вимкнути звук відео" [ref=e101] [cursor=pointer]
+    - generic [ref=e106]:
+      - generic [ref=e107]: Ваша дитина вчила англійську раніше?
+      - generic [ref=e109]:
+        - button "Вже почав вивчати" [ref=e111] [cursor=pointer]
+        - button "Ніколи не вивчав" [ref=e116] [cursor=pointer]
+  - iframe [ref=e96]:
+    
+  - button "Open Intercom Messenger" [ref=e97] [cursor=pointer]

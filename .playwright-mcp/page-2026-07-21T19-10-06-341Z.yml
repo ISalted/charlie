@@ -1,0 +1,15 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e5]:
+      - button [ref=e7] [cursor=pointer]
+      - img "Allright Logo" [ref=e12]
+      - generic [ref=e14]: 16 / 21
+    - button "Вимкнути звук відео" [ref=e101] [cursor=pointer]
+    - generic [ref=e223]:
+      - generic [ref=e224]: Який характер у учня?
+      - generic [ref=e226]:
+        - button "Спокійний" [ref=e228] [cursor=pointer]
+        - button "Непосидючий" [ref=e233] [cursor=pointer]
+  - iframe [ref=e96]:
+    
+  - button "Open Intercom Messenger" [ref=e97] [cursor=pointer]

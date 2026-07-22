@@ -21,3 +21,13 @@ export interface QuizRunResult {
   /** The path taken as step kinds, in order (drift snapshot — never asserted as a contract). */
   path: StepKind[];
 }
+
+/** The variant-independent business outcome, observed from the network during a completion run. */
+export interface QuizOutcome {
+  /** What the generic engine reported. */
+  runResult: QuizRunResult;
+  /** `POST /api/v1/users` returned 2xx during the run — the account was created. */
+  accountCreated: boolean;
+  /** `POST /api/v1/lessons` returned 2xx during the run — the trial lesson was booked. */
+  trialBooked: boolean;
+}
